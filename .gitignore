@@ -4,6 +4,12 @@ env/
 __pycache__/
 *.pyc
 
+# Python Environment
+.venv/
+env/
+__pycache__/
+*.pyc
+
 # Secrets & Environment Variables
 .env
 
@@ -11,6 +17,13 @@ __pycache__/
 db.sqlite3
 
 # OS Files
-.DS_Storevenv/
+.DS_Store
+
+# Virtual Environment
+venv/
+env/
+.venv/
+
+# Django / Static
 media/
 staticfiles/
