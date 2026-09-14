@@ -1,0 +1,13 @@
+# Node Modules (Ye sabse heavy folder hota hai)
+node_modules/
+
+# Secrets
+.env
+.env.local
+
+# Build output (Jab production ke liye build banti hai)
+dist/
+dist-ssr/
+
+# OS Files
+.DS_Store
