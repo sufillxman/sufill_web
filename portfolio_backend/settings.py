@@ -4,6 +4,7 @@ pymysql.install_as_MySQLdb()
 from pathlib import Path
 from decouple import config  # pyrefly: ignore [missing-import]
 import os
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -12,7 +13,7 @@ DEBUG = config("DEBUG", default=False, cast=bool)
 
 ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS',
-    default='localhost,127.0.0.1,.up.railway.app'
+    default='localhost,127.0.0.1,.up.railway.app,.onrender.com'
 ).split(',')
 
 INSTALLED_APPS = [
@@ -21,7 +22,9 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    "cloudinary_storage",
     "django.contrib.staticfiles",
+    "cloudinary",
     "rest_framework",
     "corsheaders",
     "portfolio_api",
@@ -67,26 +70,21 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "portfolio_backend.wsgi.application"
 
-DB_ENGINE = config("DB_ENGINE", default="sqlite")
+# Database Configuration
+# Uses DATABASE_URL for Postgres, fallback to SQLite if not provided.
+DATABASES = {
+    "default": dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600,
+    )
+}
 
-if DB_ENGINE == "mysql":
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.mysql",
-            "NAME": config("DB_NAME"),
-            "USER": config("DB_USER"),
-            "PASSWORD": config("DB_PASSWORD"),
-            "HOST": config("DB_HOST"),
-            "PORT": config("DB_PORT", default="3306"),
-        }
-    }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
-    }
+# Cloudinary Configuration
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME', default=''),
+    'API_KEY': config('CLOUDINARY_API_KEY', default=''),
+    'API_SECRET': config('CLOUDINARY_API_SECRET', default=''),
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -107,10 +105,13 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
+if config('CLOUDINARY_CLOUD_NAME', default=''):
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 FRONTEND_URL = config("FRONTEND_URL", default="http://localhost:5173").rstrip('/')
 
 CORS_ALLOWED_ORIGINS = list({FRONTEND_URL, "http://localhost:5173", "http://127.0.0.1:5173"})
-CSRF_TRUSTED_ORIGINS = [FRONTEND_URL, "https://*.up.railway.app"]
+CSRF_TRUSTED_ORIGINS = [FRONTEND_URL, "https://*.up.railway.app,.onrender.com"]
 CORS_ALLOW_CREDENTIALS = True
