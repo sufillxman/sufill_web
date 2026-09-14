@@ -13,7 +13,7 @@ DEBUG = config("DEBUG", default=False, cast=bool)
 
 ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS',
-    default='localhost,127.0.0.1,.up.railway.app,.onrender.com'
+    default='localhost,127.0.0.1,.up.railway.app,.onrender.com,.vercel.app'
 ).split(',')
 
 INSTALLED_APPS = [
@@ -113,5 +113,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 FRONTEND_URL = config("FRONTEND_URL", default="http://localhost:5173").rstrip('/')
 
 CORS_ALLOWED_ORIGINS = list({FRONTEND_URL, "http://localhost:5173", "http://127.0.0.1:5173"})
-CSRF_TRUSTED_ORIGINS = [FRONTEND_URL, "https://*.up.railway.app,.onrender.com"]
+CSRF_TRUSTED_ORIGINS = [FRONTEND_URL, "https://*.up.railway.app", "https://*.onrender.com", "https://*.vercel.app"]
 CORS_ALLOW_CREDENTIALS = True
