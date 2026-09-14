@@ -11,7 +11,14 @@ const colorMap = {
 // Deterministic color from project id
 const getColor = (id) => {
   const keys = Object.keys(colorMap);
-  return colorMap[keys[id % keys.length]];
+  let numericId = 0;
+  if (typeof id === 'number') {
+    numericId = id;
+  } else if (typeof id === 'string') {
+    // simple string hash if it's not a pure number
+    numericId = id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  }
+  return colorMap[keys[numericId % keys.length]];
 };
 
 const ProjectCard = ({ project }) => {
