@@ -22,3 +22,9 @@ class CertificateAdmin(admin.ModelAdmin):
     list_display = ("title", "issuer", "credential_url", "created_at")
     search_fields = ("title", "issuer")
     list_filter = ("created_at",)
+
+
+@admin.register(ResumeProfile)
+class ResumeProfileAdmin(admin.ModelAdmin):
+    list_display = ("name", "role", "email", "updated_at")
+    readonly_fields = ("updated_at",)

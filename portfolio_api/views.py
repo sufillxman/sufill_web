@@ -12,10 +12,9 @@ from .serializers import (
 
 class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    Public API endpoint for portfolio projects.
-    Supports:
-    GET /api/projects/
-    GET /api/projects/{id}/
+    Read-only endpoint returning all portfolio projects.
+    GET /api/projects/  — list
+    GET /api/projects/{id}/  — detail
     """
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
@@ -24,10 +23,9 @@ class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
 
 class CertificateViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    Public API endpoint for certificates.
-    Supports:
-    GET /api/certificates/
-    GET /api/certificates/{id}/
+    Read-only endpoint returning all certificates.
+    GET /api/certificates/  — list
+    GET /api/certificates/{id}/  — detail
     """
     queryset = Certificate.objects.all()
     serializer_class = CertificateSerializer
@@ -39,75 +37,27 @@ class ContactMessageViewSet(
     viewsets.GenericViewSet
 ):
     """
-    Public API endpoint for contact form submissions.
-    Supports:
+    Write-only endpoint accepting contact form submissions.
     POST /api/contact/
     """
     queryset = ContactMessage.objects.all()
     serializer_class = ContactMessageSerializer
     permission_classes = [AllowAny]
+    throttle_scope = 'contact'
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-
-        # Email notifications are disabled until SMTP is configured.
-        # The contact data is still saved to the backend for review.
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class ResumeViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    Public API endpoint for resume content.
-    Supports:
-    GET /api/resume/
+    Read-only endpoint returning the resume profile.
+    GET /api/resume/  — list (returns single-item array for frontend compatibility)
     """
     queryset = ResumeProfile.objects.all()
     serializer_class = ResumeSerializer
     permission_classes = [AllowAny]
-
-    def list(self, request, *args, **kwargs):
-        resume_data = {
-            "name": "Sufill X Man (Manknojiya Sufiyan)",
-            "role": "AI + Web + API Fullstack Developer (Target: 2026)",
-            "phone": "7405721856",
-            "email": "sufillxman@gmail.com",
-            "linkedin": "https://linkedin.com/in/sufill-x-man/",
-            "github": "https://github.com/sufillxman",
-            "instagram": "https://instagram.com/sufilldigital/",
-            "summary": "BCA student building automation-first fullstack experiences with Django, DRF, React, and polished UIs.",
-            "skills": [
-                "HTML", "CSS", "JavaScript",
-                "Bootstrap", "CSS Grid", "Flexbox",
-                "React.js", "Redux Toolkit", "Tailwind CSS",
-                "Python", "Django", "Django REST Framework",
-                "MySQL", "C Programming",
-                "Problem-Solving & Debugging",
-                "Video Editing", "Graphic Design", "Digital Marketing"
-            ],
-            "education": [
-                "Bachelor of Computer Applications (BCA) - In Progress",
-                "Web Development Course - Xipra Technology (Completed)"
-            ],
-            "highlights": [
-                "Custom billing and inventory automation for retail mobile businesses.",
-                "Instagram clone with secure admin management built in Python.",
-                "Modern UI design work for hotels, shops, and companies using Tailwind and Bootstrap.",
-                "Database-driven resume and headless CMS architecture for faster editing."
-            ],
-        }
-        resume, created = ResumeProfile.objects.get_or_create(defaults={**resume_data})
-        if not created:
-            # Make sure defaults exist in DB if model exists but some fields are missing
-            updated = False
-            for field, value in resume_data.items():
-                if getattr(resume, field) in (None, '', []):
-                    setattr(resume, field, value)
-                    updated = True
-            if updated:
-                resume.save()
-
-        serializer = self.get_serializer(resume)
-        return Response([serializer.data])
