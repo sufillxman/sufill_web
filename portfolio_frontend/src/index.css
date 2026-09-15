@@ -174,3 +174,12 @@ input:focus, textarea:focus {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* ─── Hide Netlify Badge ──────────────────────────────── */
+#netlify-badge,
+.netlify-badge,
+netlify-badge,
+iframe[src*="netlify"],
+#netlify-identity-widget {
+  display: none !important;
+}
