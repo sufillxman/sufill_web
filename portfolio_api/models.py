@@ -11,6 +11,7 @@ class Project(models.Model):
     image = models.ImageField(upload_to="projects/", blank=True, null=True)
     live_link = models.URLField(blank=True, null=True)
     github_link = models.URLField(blank=True, null=True)
+    is_private = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
 

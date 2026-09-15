@@ -13,6 +13,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             "image",
             "live_link",
             "github_link",
+            "is_private",
             "created_at",
         ]
 

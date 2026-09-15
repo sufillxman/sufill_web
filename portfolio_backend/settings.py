@@ -4,6 +4,7 @@ pymysql.install_as_MySQLdb()
 from pathlib import Path
 from decouple import config  # pyrefly: ignore [missing-import]
 import os
+# pyrefly: ignore [missing-import]
 import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent

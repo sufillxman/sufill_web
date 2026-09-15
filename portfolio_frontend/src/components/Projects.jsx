@@ -14,16 +14,7 @@ const Projects = () => {
     fetchProjectsApi()
       .then((data) => {
         const fetchedData = data || [];
-        const staticProjects = [
-          {
-            id: 'static-2',
-            title: 'OmniClip',
-            description: 'Details releasing soon.',
-            tech_stack: 'React, Python, Video Processing',
-            is_private: true
-          }
-        ];
-        setProjectsData([...fetchedData, ...staticProjects]);
+        setProjectsData(fetchedData);
         setLoading(false);
       })
       .catch((err) => {

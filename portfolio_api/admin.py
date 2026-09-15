@@ -4,9 +4,9 @@ from .models import Project, ContactMessage, Certificate, ResumeProfile
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ("title", "tech_stack", "live_link", "github_link", "created_at")
+    list_display = ("title", "tech_stack", "is_private", "live_link", "github_link", "created_at")
     search_fields = ("title", "description", "tech_stack")
-    list_filter = ("created_at",)
+    list_filter = ("is_private", "created_at")
 
 
 @admin.register(ContactMessage)
